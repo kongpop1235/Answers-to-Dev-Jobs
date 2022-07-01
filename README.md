@@ -1,2 +1,4 @@
 # Answers-to-Dev-Jobs
-For applying for a job at Forviz
+if need to use .wsd file use it in vscode by installing the PlantUML extension, then alt+d on the file.
+
+PlantUML Document : https://plantuml.com/en/guide

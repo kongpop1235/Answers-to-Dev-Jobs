@@ -1,0 +1,17 @@
+(*) --> "function checkAvailability(roomId, startTime, endTime)"
+--> "convert received data"
+if "check roomId" then
+    --> if "check start Date < End Date" then 
+            --> if "check room availability" then
+                --> [true] "return true"
+                --> (*)
+                else
+                    -right-> [false] "return false"
+                endif
+        else 
+            -right-> [false] "return false"
+        endif
+else
+    -right-> [false] "return false"
+    --> (*)
+endif
