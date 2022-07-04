@@ -90,7 +90,7 @@ const checkAvailability = (roomId, startTime, endTime) => {
         for (const x of checkRoom) {
             if (new Date(x.startTime).getTime() < checkOut && new Date(x.endTime).getTime() > checkIn) {
                 return false;
-                // return console.log(`roomId : ${x.roomId}, id : ${x.id}`); //If need to know roomId and id for check in bookinfData
+                // return console.log(`roomId : ${x.roomId}, id : ${x.id}`); //If need to know roomId and id for check in bookingData
             }
         }
         return true;
