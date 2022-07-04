@@ -45,79 +45,8 @@
     //get data
     const getData = async (url) => {
       const response = await fetch(url);
-      const rawData = [
-  {
-    "id": 1,
-    "roomId": "A101",
-    "startTime": "2019-09-28 13:00:00",
-    "endTime": "2019-09-28 14:00:00",
-    "title": "Lunch with Petr"
-  },
-  {
-    "id": 2,
-    "roomId": "A101",
-    "startTime": "2019-09-28 14:00:00",
-    "endTime": "2019-09-28 15:00:00",
-    "title": "Sales Weekly Meeting"
-  },
-  {
-    "id": 3,
-    "roomId": "A101",
-    "startTime": "2019-09-28 16:00:00",
-    "endTime": "2019-09-28 18:00:00",
-    "title": "Anastasia Website Warroom"
-  },
-  {
-    "id": 4,
-    "roomId": "A101",
-    "startTime": "2019-09-29 13:00:00",
-    "endTime": "2019-09-29 14:00:00",
-    "title": "One-on-One Session"
-  },
-  {
-    "id": 5,
-    "roomId": "A101",
-    "startTime": "2019-09-29 16:00:00",
-    "endTime": "2019-09-29 18:00:00",
-    "title": "UGC Sprint Planning"
-  },
-  {
-    "id": 6,
-    "roomId": "A102",
-    "startTime": "2019-09-30 09:00:00",
-    "endTime": "2019-10-04 18:00:00",
-    "title": "5-Day Design Sprint Workshop"
-  },
-  {
-    "id": 7,
-    "roomId": "Auditorium",
-    "startTime": "2019-09-19 09:00:00",
-    "endTime": "2019-09-23 19:00:00",
-    "title": "Thai Tech Innovation 2019"
-  },
-  {
-    "id": 8,
-    "roomId": "A101",
-    "startTime": "2019-10-09 10:00:00",
-    "endTime": "2019-10-09 13:00:00",
-    "title": "Raimonland project"
-  },
-  {
-    "id": 9,
-    "roomId": "A102",
-    "startTime": "2019-09-30 18:00:00",
-    "endTime": "2019-09-30 20:00:00",
-    "title": "Management Meetinng"
-  },
-  {
-    "id": 10,
-    "roomId": "A101",
-    "startTime": "2019-10-04 14:00:00",
-    "endTime": "2019-10-06 11:00:00",
-    "title": "3-day workshop Corgi costume"
-  }
-];
-//await response.json();
+      const rawData = await response.json();
+      //await response.json();
 
       data = rawData.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
@@ -126,7 +55,6 @@
       setDayOfWeekToday(data[0].startTime.split(" ").shift());
       thisDay();
       thisWeek();
-      console.log(data);
       return;
     };
     let data = getData("https://raw.githubusercontent.com/forviz/developer-test/master/02-venue-booking/demo-booking-data.json");
@@ -185,7 +113,7 @@
       const room = data.filter(item => item.roomId === urlParams);
 
       for (let x = 0; x < 3; x++) {
-        if(new Date("2019-09-29 00:00:00").getTime() < new Date(data[x].startTime.split(" ").shift()).getTime()) {
+        if (new Date("2019-09-29 00:00:00").getTime() < new Date(data[x].startTime.split(" ").shift()).getTime()) {
           let noRoom = document.createElement('p');
           noRoom.setAttribute(
             'class',
@@ -269,17 +197,16 @@
           for (let i = 0; i < data.length; i++) {
             //Create element
             let thisWeekContent = document.createElement('div');
-            console.log("x : " + x);
-            console.log("y : " + y);
-            console.log("-------------------------");
-            if (data[y] === undefined || new Date(date).getTime() !== new Date(data[y].startTime.split(" ").shift()).getTime()) {
-              break;
+            if (data[i] !== undefined && new Date(date).getTime() === new Date(data[i].startTime.split(" ").shift()).getTime()) {
+              //Add text to element [time]
+              thisWeekContent.innerHTML = `<li class="${dotColor[y]}"><span>${padTo2Digits(new Date(data[i].startTime).getHours())}:${padTo2Digits(new Date(data[i].startTime).getMinutes())} - ${padTo2Digits(new Date(data[i].endTime).getHours())}:${padTo2Digits(new Date(data[i].endTime).getMinutes())}</span></li><p>${data[i].title}</p>`;
+              //Add element to DOM [time]
+              document.getElementsByClassName("clock-title")[x].appendChild(thisWeekContent);
+              y++;
             }
-            //Add text to element [time]
-            thisWeekContent.innerHTML = `<li class="${dotColor[i]}"><span>${padTo2Digits(new Date(data[y].startTime).getHours())}:${padTo2Digits(new Date(data[y].startTime).getMinutes())} - ${padTo2Digits(new Date(data[y].endTime).getHours())}:${padTo2Digits(new Date(data[y].endTime).getMinutes())}</span></li><p>${data[y].title}</p>`;
-            //Add element to DOM [time]
-            document.getElementsByClassName("clock-title")[x].appendChild(thisWeekContent);
-            y++;
+            if (i === data.length - 1) {
+              y=0;
+            }
           }
         }
       }
@@ -315,10 +242,12 @@
         const date = new Date("2019-09-28");
         date.setDate(date.getDate() + x + 7);
 
+        console.log("----------------------");
+        console.log("x : " + x);
 
         //Check day on this week
         if (data[x] === undefined || new Date(data[0].startTime).setDate(new Date(data[0].startTime).getDate() + 7) >= new Date(data[0].startTime).setDate(new Date(data[x].startTime).getDate())) {
-          
+
           //Add text to element [day]
           thisWeekTitle.innerHTML = `<p>${week[x]} (${dayOfWeek(date)[1]}, ${new Date(date).getDate()} ${new Date(date).toLocaleString('en-EN', { month: 'short' })})</p>`;
           //Add element to DOM [day]
@@ -328,17 +257,20 @@
           for (let i = 0; i < data.length; i++) {
             //Create element
             let thisWeekContent = document.createElement('div');
-            console.log("x : " + x);
-            console.log("y : " + y);
-            console.log("-------------------------");
-            if (data[y] === undefined || new Date(date).getTime() !== new Date(data[y].startTime.split(" ").shift()).getTime()) {
-              break;
-            }
-            //Add text to element [time]
-            thisWeekContent.innerHTML = `<li class="${dotColor[i]}"><span>${padTo2Digits(new Date(data[y].startTime).getHours())}:${padTo2Digits(new Date(data[y].startTime).getMinutes())} - ${padTo2Digits(new Date(data[y].endTime).getHours())}:${padTo2Digits(new Date(data[y].endTime).getMinutes())}</span></li><p>${data[y].title}</p>`;
-            //Add element to DOM [time]
-            document.getElementsByClassName("clock-title")[x + 1].appendChild(thisWeekContent);
-            y++;
+            console.log(date);
+            console.log(data[i].startTime.split(" ").shift());
+            console.log(data[i]);
+            console.log(new Date(date).getTime() === new Date(data[i].startTime.split(" ").shift()).getTime());
+            if (data[i] !== undefined && new Date(date).getTime() === new Date(data[i].startTime.split(" ").shift()).getTime()) {
+              //Add text to element [time]
+              thisWeekContent.innerHTML = `<li class="${dotColor[y]}"><span>${padTo2Digits(new Date(data[i].startTime).getHours())}:${padTo2Digits(new Date(data[i].startTime).getMinutes())} - ${padTo2Digits(new Date(data[i].endTime).getHours())}:${padTo2Digits(new Date(data[i].endTime).getMinutes())}</span></li><p>${data[i].title}</p>`;
+              //Add element to DOM [time]
+              document.getElementsByClassName("clock-title")[x].appendChild(thisWeekContent);
+              y++;
+            }            
+            if (i === data.length - 1) {
+              y=0;
+            }        
           }
         }
       }
